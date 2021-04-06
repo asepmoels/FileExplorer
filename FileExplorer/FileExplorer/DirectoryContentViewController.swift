@@ -32,16 +32,16 @@ protocol DirectoryContentViewControllerDelegate: class {
     func directoryContentViewController(_ controller: DirectoryContentViewController, didChooseItems items: [Item<Any>])
 }
 
-final class DirectoryContentViewController: UICollectionViewController {
+public final class DirectoryContentViewController: UICollectionViewController {
     weak var delegate: DirectoryContentViewControllerDelegate?
 
-    fileprivate let viewModel: DirectoryContentViewModel
+    public let viewModel: DirectoryContentViewModel
 
     private let toolbar: UIToolbar
     private var toolbarBottomConstraint: NSLayoutConstraint?
     private var isFirstLayout = true
 
-    override var collectionViewLayout: UICollectionViewFlowLayout {
+  public override var collectionViewLayout: UICollectionViewFlowLayout {
         get {
             return collectionView?.collectionViewLayout as! UICollectionViewFlowLayout
         }
@@ -63,20 +63,20 @@ final class DirectoryContentViewController: UICollectionViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLayoutSubviews() {
+  public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         guard let collectionView = collectionView else { return }
 
         collectionViewLayout.itemSize = CGSize(width: view.bounds.width, height: 64.0)
-        collectionViewLayout.headerReferenceSize = CGSize(width: view.bounds.width, height: 44.0)
+//        collectionViewLayout.headerReferenceSize = CGSize(width: view.bounds.width, height: 44.0)
         collectionViewLayout.footerReferenceSize = CGSize(width: view.bounds.width, height: collectionView.frame.height - CGFloat(viewModel.numberOfItems(inSection: 0)) * collectionViewLayout.itemSize.height)
         if isFirstLayout {
             isFirstLayout = false
-            collectionView.contentOffset.y = 44.0
+//            collectionView.contentOffset.y = 44.0
         }
     }
 
-    override func viewDidLoad() {
+  public override func viewDidLoad() {
         super.viewDidLoad()
         guard let collectionView = collectionView else { return }
 
@@ -97,7 +97,7 @@ final class DirectoryContentViewController: UICollectionViewController {
         syncWithViewModel(false)
     }
 
-    func syncWithViewModel(_ animated: Bool) {
+    public func syncWithViewModel(_ animated: Bool) {
         if let items = toolbar.items {
             for barButtonItem in items {
                 barButtonItem.isEnabled = viewModel.isDeleteActionEnabled
@@ -113,7 +113,7 @@ final class DirectoryContentViewController: UICollectionViewController {
         setEditing(viewModel.isEditing, animated: true)
     }
 
-    override func setEditing(_ editing: Bool, animated: Bool) {
+  public override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         guard let collectionView = collectionView, collectionView.isEditing != editing else {
             return
@@ -150,13 +150,13 @@ final class DirectoryContentViewController: UICollectionViewController {
 
     // MARK: Actions
 
-    func handleSelectButtonTap() {
+  @objc func handleSelectButtonTap() {
         viewModel.chooseItems { selectedItems in
             delegate?.directoryContentViewController(self, didChooseItems: selectedItems)
         }
     }
 
-    func handleDeleteButtonTap() {
+  @objc func handleDeleteButtonTap() {
         showLoadingIndicator()
         viewModel.deleteItems(at: viewModel.indexPathsOfSelectedCells) { [weak self] result in
             guard let strongSelf = self else { return }
@@ -171,7 +171,7 @@ final class DirectoryContentViewController: UICollectionViewController {
         }
     }
 
-    func handleEditButtonTap() {
+  @objc func handleEditButtonTap() {
         viewModel.isEditing = !viewModel.isEditing
         delegate?.directoryContentViewController(self, didChangeEditingStatus: viewModel.isEditing)
     }
@@ -193,15 +193,15 @@ extension DirectoryContentViewController: DirectoryContentViewModelDelegate {
 }
 
 extension DirectoryContentViewController {
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+  public override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return viewModel.numberOfSections
     }
 
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  public override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.numberOfItems(inSection: section)
     }
 
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+  public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(ofClass: ItemCell.self, for: indexPath) as ItemCell
         let itemViewModel = viewModel.viewModel(for: indexPath)
 
@@ -217,8 +217,8 @@ extension DirectoryContentViewController {
         return cell
     }
 
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if kind == UICollectionElementKindSectionHeader {
+  public override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+      if kind == UICollectionView.elementKindSectionHeader {
             let header = collectionView.dequeueReusableHeader(ofClass: CollectionViewHeader.self, for: indexPath) as CollectionViewHeader
             header.sortModeChangeAction = viewModel.sortModeChangeAction
             header.sortMode = viewModel.sortMode
@@ -226,7 +226,7 @@ extension DirectoryContentViewController {
                 header.layoutIfNeeded()
             }
             return header
-        } else if kind == UICollectionElementKindSectionFooter {
+        } else if kind == UICollectionView.elementKindSectionFooter {
             return collectionView.dequeueReusableFooter(ofClass: CollectionViewFooter.self, for: indexPath) as CollectionViewFooter
         } else {
             fatalError()
@@ -235,20 +235,20 @@ extension DirectoryContentViewController {
 }
 
 extension DirectoryContentViewController {
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+  public override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.select(at: indexPath)
         if !viewModel.isSelectionEnabled {
             collectionView.deselectItem(at: indexPath, animated: false)
         }
     }
 
-    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+  public override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         viewModel.deselect(at: indexPath)
     }
 }
 
 extension DirectoryContentViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
+  public func updateSearchResults(for searchController: UISearchController) {
         viewModel.searchQuery = searchController.searchBar.text
     }
 }

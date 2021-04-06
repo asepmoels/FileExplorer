@@ -31,14 +31,14 @@ protocol DirectoryContentViewModelDelegate: class {
     func directoryViewModel(_ viewModel: DirectoryContentViewModel, didSelectItem item: Item<Any>)
 }
 
-enum SortMode {
-    case name
-    case date
+public enum SortMode {
+  case name(isAscending: Bool)
+  case date(isAscending: Bool)
 }
 
-typealias Items = [Item<Any>]
+public typealias Items = [Item<Any>]
 
-final class DirectoryContentViewModel {
+public final class DirectoryContentViewModel {
     enum ViewModelError: Error {
         case failedItemsRemoval
     }
@@ -49,7 +49,7 @@ final class DirectoryContentViewModel {
         return { sortMode in self?.sortMode = sortMode }
         }()
 
-    var sortMode: SortMode {
+    public var sortMode: SortMode {
         didSet {
             itemsToDisplay = DirectoryContentViewModel.itemsWithAppliedFilterAndSortCriterias(searchQuery: searchQuery ?? "", sortMode: sortMode, items: allItems)
             delegate?.directoryViewModelDidChangeItemsList(self)
@@ -156,7 +156,7 @@ final class DirectoryContentViewModel {
     }
 
     private var selectedItems = Items()
-    private var allItems: Items
+    public var allItems: Items
     private var itemsToDisplay: Items
     private let url: URL
     private let configuration: Configuration
@@ -168,7 +168,7 @@ final class DirectoryContentViewModel {
         self.fileSpecifications = fileSpecifications
         self.configuration = configuration
         self.fileService = fileService
-        self.sortMode = .name
+      self.sortMode = .date(isAscending: true)
 
         let filteringConfiguration = configuration.filteringConfiguration
         self.allItems = item.resource.filter {  filteringConfiguration.fileFilters.count == 0 || filteringConfiguration.fileFilters.matchesItem($0) }
@@ -220,9 +220,13 @@ final class DirectoryContentViewModel {
         let filteredItems = items.filter { $0.url.lastPathComponent.localizedCaseInsensitiveContains(searchQuery) || searchQuery == "" }
         return filteredItems.sorted { (lhs, rhs) in
             switch sortMode {
-            case .name: return lhs.url.compare(rhs.url) == ComparisonResult.orderedAscending
-            case .date: return lhs.modificationDate > rhs.modificationDate
+            case .name(let isAscending): return isAscending ? lhs.url.compare(rhs.url) == ComparisonResult.orderedAscending : lhs.url.compare(rhs.url) == ComparisonResult.orderedDescending
+            case .date(let isAscending): return isAscending ? lhs.modificationDate < rhs.modificationDate : lhs.modificationDate > rhs.modificationDate
             }
+        }.sorted { (lhs, rhs) -> Bool in
+          let l = lhs.type == .directory ? 0 : 1
+          let r = rhs.type == .directory ? 0 : 1
+          return l < r
         }
     }
 

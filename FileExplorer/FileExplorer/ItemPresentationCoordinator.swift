@@ -29,7 +29,10 @@ import AVFoundation
 
 protocol ItemPresentationCoordinatorDelegate: class {
     func itemPresentationCoordinatorDidFinish(_ coordinator: ItemPresentationCoordinator)
-    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didChooseItems items: [Item<Any>])
+  func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didChooseItems items: [Item<Any>])
+  func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didChooseFile items: Item<Any>)
+  func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didChooseDirectory items: Item<Any>)
+  func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didSelectDetails items: Item<Any>)
 }
 
 final class ItemPresentationCoordinator {
@@ -70,14 +73,20 @@ final class ItemPresentationCoordinator {
 
 extension ItemPresentationCoordinator: DirectoryItemPresentationCoordinatorDelegate {
     func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didSelectItem item: Item<Any>) {
+      if item.type == .file {
+        delegate?.itemPresentationCoordinator(self, didChooseFile: item)
+      } else {
+        delegate?.itemPresentationCoordinator(self, didChooseDirectory: item)
         start(item: item, fileSpecifications: fileSpecifications, configuration: configuration, animated: true)
+      }
     }
 
     func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didSelectItemDetails item: Item<Any>) {
-        guard let navigationController = navigationController else { fatalError() }
-        let coordinator = FileItemPresentationCoordinator(navigationController: navigationController, item: item, fileSpecifications: fileSpecifications)
-        childCoordinators.append(coordinator)
-        coordinator.startDetailsPreview(true)
+//        guard let navigationController = navigationController else { fatalError() }
+//        let coordinator = FileItemPresentationCoordinator(navigationController: navigationController, item: item, fileSpecifications: fileSpecifications)
+//        childCoordinators.append(coordinator)
+//        coordinator.startDetailsPreview(true)
+      delegate?.itemPresentationCoordinator(self, didSelectDetails: item)
     }
     
     func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didChooseItems items: [Item<Any>]) {

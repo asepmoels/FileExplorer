@@ -25,7 +25,7 @@
 
 import UIKit
 
-final class DirectoryViewModel {
+public final class DirectoryViewModel {
     fileprivate let finishButtonHidden: Bool
 
     private let url: URL
@@ -61,10 +61,10 @@ protocol DirectoryViewControllerDelegate: class {
     func directoryViewControllerDidFinish(_ controller: DirectoryViewController)
 }
 
-final class DirectoryViewController: UIViewController {
+public final class DirectoryViewController: UIViewController {
     weak var delegate: DirectoryViewControllerDelegate?
 
-    fileprivate let viewModel: DirectoryViewModel
+    public let viewModel: DirectoryViewModel
 
     fileprivate let searchController: UISearchController
     fileprivate let searchResultsController: DirectoryContentViewController
@@ -94,7 +94,7 @@ final class DirectoryViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+  public override func viewDidLoad() {
         super.viewDidLoad()
         
         extendedLayoutIncludesOpaqueBars = false
@@ -104,7 +104,7 @@ final class DirectoryViewController: UIViewController {
         addContentChildViewController(directoryContentViewController, insets: UIEdgeInsets(top: searchController.searchBar.bounds.height, left: 0.0, bottom: 0.0, right: 0.0))
         navigationItem.rightBarButtonItem = directoryContentViewController.navigationItem.rightBarButtonItem
         navigationItem.title = directoryContentViewController.navigationItem.title
-        view.sendSubview(toBack: directoryContentViewController.view)
+      view.sendSubviewToBack(directoryContentViewController.view)
         setUpLeftBarButtonItem()
     }
 
@@ -134,13 +134,13 @@ final class DirectoryViewController: UIViewController {
     
     // MARK: Actions
 
-    func handleFinishButtonTap() {
+  @objc func handleFinishButtonTap() {
         delegate?.directoryViewControllerDidFinish(self)
     }
 }
 
 extension DirectoryViewController: UISearchBarDelegate {
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+  public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         directoryContentViewController.setEditing(false, animated: true)
         searchResultsViewModel.sortMode = directoryContentViewModel.sortMode
     }

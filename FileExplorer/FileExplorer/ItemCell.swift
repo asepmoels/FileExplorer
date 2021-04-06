@@ -30,8 +30,8 @@ protocol Editable {
 }
 
 enum ColorPallete {
-    static let gray = UIColor(colorLiteralRed: 200/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1.0)
-    static let blue = UIColor(colorLiteralRed: 21/255.0, green: 126/255.0, blue: 251/255, alpha: 1.0)
+    static let gray = UIColor(red: 200/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1.0)
+    static let blue = UIColor(red: 21/255.0, green: 126/255.0, blue: 251/255, alpha: 1.0)
 }
 
 enum LayoutConstants {
@@ -151,26 +151,26 @@ final class ItemCell: UICollectionViewCell, Editable {
     private func setupAccessoryImageViewConstraints() {
         accessoryImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -15).isActive = true
         accessoryImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        accessoryImageView.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .horizontal)
-        accessoryImageView.setContentCompressionResistancePriority(UILayoutPriorityDefaultHigh, for: .vertical)
-        accessoryImageView.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
+      accessoryImageView.setContentCompressionResistancePriority(UILayoutPriority.required, for: .horizontal)
+      accessoryImageView.setContentCompressionResistancePriority(UILayoutPriority.defaultHigh, for: .vertical)
+      accessoryImageView.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .horizontal)
     }
     
     private func setupTitleLabelContstraints() {
         titleTextLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 12.0).isActive = true
         titleTextLabel.trailingAnchor.constraint(equalTo: accessoryImageView.leadingAnchor, constant: -10.0).isActive = true
         titleTextLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12.0).isActive = true
-        titleTextLabel.setContentCompressionResistancePriority(UILayoutPriorityDefaultHigh, for: .horizontal)
-        titleTextLabel.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
+      titleTextLabel.setContentCompressionResistancePriority(UILayoutPriority.defaultHigh, for: .horizontal)
+      titleTextLabel.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
     }
     
     private func setupSubtitleLabelConstraints() {
         subtitleTextLabel.leadingAnchor.constraint(equalTo: titleTextLabel.leadingAnchor).isActive = true
         subtitleTextLabel.trailingAnchor.constraint(equalTo: titleTextLabel.trailingAnchor).isActive = true
         subtitleTextLabel.topAnchor.constraint(equalTo: titleTextLabel.bottomAnchor, constant: 3.0).isActive = true
-        subtitleTextLabel.setContentCompressionResistancePriority(UILayoutPriorityDefaultHigh
+      subtitleTextLabel.setContentCompressionResistancePriority(UILayoutPriority.defaultHigh
             , for: .horizontal)
-        subtitleTextLabel.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
+      subtitleTextLabel.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
     }
 
     private func setupCheckmarkButtonConstraints() {
@@ -260,7 +260,7 @@ final class ItemCell: UICollectionViewCell, Editable {
 
     // MARK: Actions 
 
-    func handleAccessoryImageTap() {
+  @objc func handleAccessoryImageTap() {
         tapAction()
     }
 }
@@ -283,7 +283,7 @@ final class CollectionViewHeader: UICollectionReusableView {
         segmentedControl.autoresizingMask = []
         segmentedControl.addTarget(self, action: #selector(handleSegmentedControlValueChanged), for: .valueChanged)
         addSubview(segmentedControl)
-        sortMode = .name
+      sortMode = .name(isAscending: true)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -298,8 +298,8 @@ final class CollectionViewHeader: UICollectionReusableView {
     var sortMode: SortMode {
         get {
             switch segmentedControl.selectedSegmentIndex {
-            case 0: return .name
-            case 1: return .date
+            case 0: return .name(isAscending: true)
+            case 1: return .date(isAscending: true)
             default: fatalError()
             }
         }

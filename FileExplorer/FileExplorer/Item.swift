@@ -39,7 +39,7 @@ public typealias FileAttributes = [FileAttributeKey: Any]
 typealias DirectoryItem = Item<[Item<Any>]>
 typealias LoadedDirectoryItem = LoadedItem<[Item<Any>]>
 
-struct Item<T> {
+public struct Item<T> {
     let url: URL
     var name: String {
         return url.lastPathComponent
@@ -89,13 +89,13 @@ struct Item<T> {
 }
 
 extension Item: Equatable {
-    internal static func ==(lhs: Item, rhs: Item) -> Bool {
+  public static func ==(lhs: Item, rhs: Item) -> Bool {
         return lhs.url == rhs.url
     }
 }
 
 extension Item: Hashable {
-    var hashValue: Int {
+  public var hashValue: Int {
         return url.hashValue
     }
 }
@@ -108,7 +108,7 @@ func ~=<T: Equatable>(pattern: [T], value: T) -> Bool {
     return pattern.contains { $0 == value }
 }
 
-extension Item {
+public extension Item {
     static func directory(at url: URL, attributes: FileAttributes? = nil) -> Item<Any>? {
         return Item<Any>(url: url, attributes: attributes) { (attributes: FileAttributes, urls: [URL]) in
             return urls.map({ url -> Any in
