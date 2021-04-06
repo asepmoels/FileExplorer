@@ -42,6 +42,18 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: FileExplorerViewControllerDelegate {
+  func fileExplorerViewController(_ controller: FileExplorerViewController, didChooseFile url: URL) {
+  
+  }
+  
+  func fileExplorerViewController(_ controller: FileExplorerViewController, didChooseDirectory url: URL) {
+    
+  }
+  
+  func fileExplorerViewController(_ controller: FileExplorerViewController, didSelectMoreButton url: URL) {
+    
+  }
+  
     public func fileExplorerViewController(_ controller: FileExplorerViewController, didChooseURLs urls: [URL]) {
         var message = ""
         for url in urls {
