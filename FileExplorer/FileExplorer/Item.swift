@@ -98,6 +98,10 @@ extension Item: Hashable {
   public var hashValue: Int {
         return url.hashValue
     }
+  
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(url.hashValue)
+  }
 }
 
 typealias Extension = String

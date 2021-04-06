@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "1240"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1B15FCFBB0C8F8A9966C43C4D9D1DFDF"
+               BlueprintIdentifier = "F21F1EDABA7F7E3654CDD47FF63B6EF5"
                BuildableName = "Pods_FileExplorerTests.framework"
                BlueprintName = "Pods-FileExplorerTests"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -29,8 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -45,14 +43,12 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1B15FCFBB0C8F8A9966C43C4D9D1DFDF"
+            BlueprintIdentifier = "F21F1EDABA7F7E3654CDD47FF63B6EF5"
             BuildableName = "Pods_FileExplorerTests.framework"
             BlueprintName = "Pods-FileExplorerTests"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
