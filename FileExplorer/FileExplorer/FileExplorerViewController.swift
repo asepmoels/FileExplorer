@@ -115,6 +115,17 @@ public final class FileExplorerViewController: UIViewController {
 
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+    }
+    
+    override public func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+    }
+
+    public func stop() {
+        coordinator.stop(false)
+    }
+
+    public func start() {
         let fileSpecifications = FileSpecifications(providers: fileSpecificationProviders)
 
         let actionsConfiguration = ActionsConfiguration(canRemoveFiles: canRemoveFiles,
@@ -130,11 +141,6 @@ public final class FileExplorerViewController: UIViewController {
         } else {
             precondition(false, "Passed URL is incorrect.")
         }
-    }
-    
-    override public func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        coordinator.stop(false)
     }
 }
 
