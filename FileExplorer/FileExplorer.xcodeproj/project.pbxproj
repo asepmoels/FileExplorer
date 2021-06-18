@@ -156,6 +156,7 @@
 		5B71403628E4A8CFC10D65AA /* Pods_FileExplorerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FileExplorerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		643B1B53C4F2E7DDF0C47B30 /* Pods-FileExplorer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileExplorer.release.xcconfig"; path = "Pods/Target Support Files/Pods-FileExplorer/Pods-FileExplorer.release.xcconfig"; sourceTree = "<group>"; };
 		7DF52393DC5099B7570C90BD /* Pods-FileExplorerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileExplorerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FileExplorerTests/Pods-FileExplorerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		9E2357F4267C9F07006B0590 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		B431DCC35D281FBEA3FDBBA3 /* Pods-FileExplorerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileExplorerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-FileExplorerTests/Pods-FileExplorerTests.release.xcconfig"; sourceTree = "<group>"; };
 		D735AF00715E26D5A8860E10 /* Pods_FileExplorer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FileExplorer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -250,6 +251,7 @@
 		063C9CE41DD7696900F96F43 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				9E2357F4267C9F07006B0590 /* Info.plist */,
 				063C9CE71DD7697200F96F43 /* ImageAssets.xcassets */,
 			);
 			name = Resources;
@@ -820,7 +822,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = FileExplorer/Resources/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -843,7 +845,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = FileExplorer/Resources/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
