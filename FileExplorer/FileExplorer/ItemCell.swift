@@ -29,9 +29,9 @@ protocol Editable {
     func setEditing(_ editing: Bool, animated: Bool)
 }
 
-enum ColorPallete {
-    static let gray = UIColor(red: 200/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1.0)
-    static let blue = UIColor(red: 21/255.0, green: 126/255.0, blue: 251/255, alpha: 1.0)
+public enum ColorPallete {
+  public static let gray = UIColor(red: 200/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1.0)
+  public static let blue = UIColor(red: 21/255.0, green: 126/255.0, blue: 251/255, alpha: 1.0)
 }
 
 enum LayoutConstants {
