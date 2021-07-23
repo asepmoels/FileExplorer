@@ -26,140 +26,142 @@
 import UIKit
 
 public final class DirectoryViewModel {
-    fileprivate let finishButtonHidden: Bool
+  fileprivate let finishButtonHidden: Bool
 
-    private let url: URL
-    private let item: LoadedDirectoryItem
-    private let fileSpecifications: FileSpecifications
-    private let configuration: Configuration
+  private let url: URL
+  private let item: LoadedDirectoryItem
+  private let fileSpecifications: FileSpecifications
+  private let configuration: Configuration
 
-    init(url: URL, item: LoadedDirectoryItem, fileSpecifications: FileSpecifications, configuration: Configuration, finishButtonHidden: Bool) {
-        self.url = url
-        self.item = item
-        self.fileSpecifications = fileSpecifications
-        self.configuration = configuration
-        self.finishButtonHidden = finishButtonHidden
+  init(url: URL, item: LoadedDirectoryItem, fileSpecifications: FileSpecifications, configuration: Configuration, finishButtonHidden: Bool) {
+    self.url = url
+    self.item = item
+    self.fileSpecifications = fileSpecifications
+    self.configuration = configuration
+    self.finishButtonHidden = finishButtonHidden
+  }
+
+  var finishButtonTitle: String {
+    if configuration.actionsConfiguration.canChooseFiles || configuration.actionsConfiguration.canChooseDirectories {
+      return NSLocalizedString("Cancel", comment: "")
+    } else {
+      return NSLocalizedString("Done", comment: "")
     }
+  }
 
-    var finishButtonTitle: String {
-        if configuration.actionsConfiguration.canChooseFiles || configuration.actionsConfiguration.canChooseDirectories {
-            return NSLocalizedString("Cancel", comment: "")
-        } else {
-            return NSLocalizedString("Done", comment: "")
-        }
-    }
-
-    func makeDirectoryContentViewModel() -> DirectoryContentViewModel {
-        return DirectoryContentViewModel(item: item, fileSpecifications: fileSpecifications, configuration: configuration)
-    }
+  func makeDirectoryContentViewModel() -> DirectoryContentViewModel {
+    return DirectoryContentViewModel(item: item, fileSpecifications: fileSpecifications, configuration: configuration)
+  }
 }
 
 protocol DirectoryViewControllerDelegate: class {
-    func directoryViewController(_ controller: DirectoryViewController, didSelectItem item: Item<Any>)
-    func directoryViewController(_ controller: DirectoryViewController, didSelectItemDetails item: Item<Any>)
-    func directoryViewController(_ controller: DirectoryViewController, didChooseItems items: [Item<Any>])
-    func directoryViewControllerDidFinish(_ controller: DirectoryViewController)
+  func directoryViewController(_ controller: DirectoryViewController, didSelectItem item: Item<Any>)
+  func directoryViewController(_ controller: DirectoryViewController, didSelectItemDetails item: Item<Any>)
+  func directoryViewController(_ controller: DirectoryViewController, didChooseItems items: [Item<Any>])
+  func directoryViewControllerDidFinish(_ controller: DirectoryViewController)
+  func directoryViewController(_ controller: DirectoryViewController, didChangeEditingStatus isEditing: Bool)
 }
 
 public final class DirectoryViewController: UIViewController {
-    weak var delegate: DirectoryViewControllerDelegate?
+  weak var delegate: DirectoryViewControllerDelegate?
 
-    public let viewModel: DirectoryViewModel
+  public let viewModel: DirectoryViewModel
 
-    fileprivate let searchController: UISearchController
-    fileprivate let searchResultsController: DirectoryContentViewController
-    fileprivate let searchResultsViewModel: DirectoryContentViewModel
+  fileprivate let searchController: UISearchController
+  fileprivate let searchResultsController: DirectoryContentViewController
+  fileprivate let searchResultsViewModel: DirectoryContentViewModel
 
-    fileprivate let directoryContentViewController: DirectoryContentViewController
-    fileprivate let directoryContentViewModel: DirectoryContentViewModel
+  fileprivate let directoryContentViewController: DirectoryContentViewController
+  fileprivate let directoryContentViewModel: DirectoryContentViewModel
 
-    init(viewModel: DirectoryViewModel) {
-        self.viewModel = viewModel
-        
-        searchResultsViewModel = viewModel.makeDirectoryContentViewModel()
-        searchResultsController = DirectoryContentViewController(viewModel: searchResultsViewModel)
-        searchController = UISearchController(searchResultsController: searchResultsController)
-        searchController.searchResultsUpdater = searchResultsController
+  init(viewModel: DirectoryViewModel) {
+    self.viewModel = viewModel
 
-        directoryContentViewModel = viewModel.makeDirectoryContentViewModel()
-        directoryContentViewController = DirectoryContentViewController(viewModel: directoryContentViewModel)
+    searchResultsViewModel = viewModel.makeDirectoryContentViewModel()
+    searchResultsController = DirectoryContentViewController(viewModel: searchResultsViewModel)
+    searchController = UISearchController(searchResultsController: searchResultsController)
+    searchController.searchResultsUpdater = searchResultsController
 
-        super.init(nibName: nil, bundle: nil)
+    directoryContentViewModel = viewModel.makeDirectoryContentViewModel()
+    directoryContentViewController = DirectoryContentViewController(viewModel: directoryContentViewModel)
 
-        searchResultsController.delegate = self
-        directoryContentViewController.delegate = self
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+    super.init(nibName: nil, bundle: nil)
+
+    searchResultsController.delegate = self
+    directoryContentViewController.delegate = self
+  }
+
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
   public override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        extendedLayoutIncludesOpaqueBars = false
-        edgesForExtendedLayout = []
-        
-        setUpSearchBarController()
-        addContentChildViewController(directoryContentViewController, insets: UIEdgeInsets(top: searchController.searchBar.bounds.height, left: 0.0, bottom: 0.0, right: 0.0))
-        navigationItem.rightBarButtonItem = directoryContentViewController.navigationItem.rightBarButtonItem
-        navigationItem.title = directoryContentViewController.navigationItem.title
-      view.sendSubviewToBack(directoryContentViewController.view)
-        setUpLeftBarButtonItem()
-    }
+    super.viewDidLoad()
 
-    func setUpSearchBarController() {
-        let searchBar = searchController.searchBar
-        searchBar.sizeToFit()
-        searchBar.autoresizingMask = [.flexibleWidth]
-        searchBar.delegate = self
-        view.addSubview(searchBar)
-        navigationItem.rightBarButtonItems = directoryContentViewController.navigationItem.rightBarButtonItems
-    }
+    extendedLayoutIncludesOpaqueBars = false
+    edgesForExtendedLayout = []
 
-    func setUpLeftBarButtonItem() {
-        if !viewModel.finishButtonHidden {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(title: viewModel.finishButtonTitle, style: .plain, target: self, action: #selector(handleFinishButtonTap))
-        }
-    }
+    setUpSearchBarController()
+    addContentChildViewController(directoryContentViewController, insets: UIEdgeInsets(top: searchController.searchBar.bounds.height, left: 0.0, bottom: 0.0, right: 0.0))
+    navigationItem.rightBarButtonItem = directoryContentViewController.navigationItem.rightBarButtonItem
+    navigationItem.title = directoryContentViewController.navigationItem.title
+    view.sendSubviewToBack(directoryContentViewController.view)
+    setUpLeftBarButtonItem()
+  }
 
-    var isSearchControllerActive: Bool {
-        get {
-            return searchController.isActive
-        }
-        set(newValue) {
-            searchController.isActive = newValue
-        }
+  func setUpSearchBarController() {
+    let searchBar = searchController.searchBar
+    searchBar.sizeToFit()
+    searchBar.autoresizingMask = [.flexibleWidth]
+    searchBar.delegate = self
+    view.addSubview(searchBar)
+    navigationItem.rightBarButtonItems = directoryContentViewController.navigationItem.rightBarButtonItems
+  }
+
+  func setUpLeftBarButtonItem() {
+    if !viewModel.finishButtonHidden {
+      navigationItem.leftBarButtonItem = UIBarButtonItem(title: viewModel.finishButtonTitle, style: .plain, target: self, action: #selector(handleFinishButtonTap))
     }
-    
-    // MARK: Actions
+  }
+
+  var isSearchControllerActive: Bool {
+    get {
+      return searchController.isActive
+    }
+    set(newValue) {
+      searchController.isActive = newValue
+    }
+  }
+
+  // MARK: Actions
 
   @objc func handleFinishButtonTap() {
-        delegate?.directoryViewControllerDidFinish(self)
-    }
+    delegate?.directoryViewControllerDidFinish(self)
+  }
 }
 
 extension DirectoryViewController: UISearchBarDelegate {
   public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        directoryContentViewController.setEditing(false, animated: true)
-        searchResultsViewModel.sortMode = directoryContentViewModel.sortMode
-    }
+    directoryContentViewController.setEditing(false, animated: true)
+    searchResultsViewModel.sortMode = directoryContentViewModel.sortMode
+  }
 }
 
 extension DirectoryViewController: DirectoryContentViewControllerDelegate {
-    func directoryContentViewController(_ controller: DirectoryContentViewController, didChangeEditingStatus isEditing: Bool) {
-        searchController.searchBar.isEnabled = !isEditing
-    }
+  func directoryContentViewController(_ controller: DirectoryContentViewController, didChangeEditingStatus isEditing: Bool) {
+    searchController.searchBar.isEnabled = !isEditing
+    delegate?.directoryViewController(self, didChangeEditingStatus: isEditing)
+  }
 
-    func directoryContentViewController(_ controller: DirectoryContentViewController, didSelectItem item: Item<Any>) {
-        delegate?.directoryViewController(self, didSelectItem: item)
-    }
+  func directoryContentViewController(_ controller: DirectoryContentViewController, didSelectItem item: Item<Any>) {
+    delegate?.directoryViewController(self, didSelectItem: item)
+  }
 
-    func directoryContentViewController(_ controller: DirectoryContentViewController, didSelectItemDetails item: Item<Any>) {
-        delegate?.directoryViewController(self, didSelectItemDetails: item)
-    }
-    
-    func directoryContentViewController(_ controller: DirectoryContentViewController, didChooseItems items: [Item<Any>]) {
-        delegate?.directoryViewController(self, didChooseItems: items)
-    }
+  func directoryContentViewController(_ controller: DirectoryContentViewController, didSelectItemDetails item: Item<Any>) {
+    delegate?.directoryViewController(self, didSelectItemDetails: item)
+  }
+
+  func directoryContentViewController(_ controller: DirectoryContentViewController, didChooseItems items: [Item<Any>]) {
+    delegate?.directoryViewController(self, didChooseItems: items)
+  }
 }
